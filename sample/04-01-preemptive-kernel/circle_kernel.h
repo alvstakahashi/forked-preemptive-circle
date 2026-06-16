@@ -18,7 +18,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 #ifndef _circle_kernel_h
-#define _clrcle_kernel_h
+#define _circle_kernel_h
 
 #include <circle/actled.h>
 #include <circle/koptions.h>
@@ -46,9 +46,11 @@ public:
 
 	boolean Initialize(void);
 
-	TShutdownMode Run(void);
+	virtual TShutdownMode Run(void);
 
 	static void TimerHandler(TKernelTimerHandle hTimer, void *pParam, void *pContext);
+	CLogger m_Logger;
+	CTimer m_Timer;
 
 private:
 	// do not change this order
@@ -59,8 +61,6 @@ private:
 	CSerialDevice m_Serial;
 	CExceptionHandler m_ExceptionHandler;
 	CInterruptSystem m_Interrupt;
-	CTimer m_Timer;
-	CLogger m_Logger;
 };
 
 #endif

@@ -3,7 +3,7 @@
 //
 // Circle - A C++ bare metal environment for Raspberry Pi
 // Copyright (C) 2014-2018  R. Stange <rsta2@o2online.de>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-#include "kernel.h"
+#include "circle_kernel.h"
 
 static const char FromKernel[] = "kernel";
 
@@ -37,22 +37,15 @@ boolean CKernel::Initialize (void)
 {
 	boolean bOK = TRUE;
 
-	if (bOK)
-	{
-		bOK = m_Screen.Initialize ();
-	}
+	bOK = m_Screen.Initialize ();		//エラーは見ない
+	bOK = m_Serial.Initialize (115200);
 
 	if (bOK)
 	{
-		bOK = m_Serial.Initialize (115200);
-	}
-
-	if (bOK)
-	{
-		CDevice *pTarget = m_DeviceNameService.GetDevice (m_Options.GetLogDevice (), FALSE);
+		CDevice *pTarget = m_DeviceNameService.GetDevice(m_Options.GetLogDevice(), FALSE);
 		if (pTarget == 0)
 		{
-			pTarget = &m_Screen;
+			return false;
 		}
 
 		bOK = m_Logger.Initialize (pTarget);

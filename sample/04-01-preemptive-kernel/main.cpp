@@ -17,20 +17,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-#include "circle_kernel.h"
 #include <circle/startup.h>
+#include "circle_kernel.h"
+#include "mykernel.h"
+#include "task-main.h"
+
+static const char FromKernel2[] = "kernel";
 
 int main(void)
 {
-	// cannot return here because some destructors used in CKernel are not implemented
+	// 作成するクラスを CMyKernel に変更
+	CMyKernel Kernel; // ⭕ mainの中なので安全に初期化される
 
-	CKernel Kernel;
-	if (!Kernel.Initialize())
-	{
-		halt();
-		return EXIT_HALT;
-	}
-
+	// 実行（ここから CMyKernel::Run() が呼び出される）
 	TShutdownMode ShutdownMode = Kernel.Run();
 
 	switch (ShutdownMode)
@@ -44,4 +43,33 @@ int main(void)
 		halt();
 		return EXIT_HALT;
 	}
+}
+#ifdef NO_SSP
+
+uint32_t tick_count;
+void _kernel_handler(INTHDR userhandler)
+{
+	tick_count++;
+	if (tick_count >= 100U)
+	{
+		CMyKernel::Instance().m_Logger.Write(FromKernel2, LogNotice, "1Second Up.");
+		tick_count = 0;
+	}
+}
+void sta_ker(void)
+{
+	tick_count = 0;
+	task2(0);
+	task3(0);
+}
+#endif
+
+void task2(intptr_t arg)
+{
+	CMyKernel::Instance().m_Logger.Write(FromKernel2, LogNotice, "Task2 Running.");
+}
+
+void task3(intptr_t arg)
+{
+	CMyKernel::Instance().m_Logger.Write(FromKernel2, LogNotice, "Task3 Running.");
 }
