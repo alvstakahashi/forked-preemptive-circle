@@ -1,3 +1,16 @@
+# Circle (Preemptive Kernel Custom Version)
+
+⚠ **Important Notice: This repository contains a customized branch designed to integrate a TOPPERS-based preemptive kernel into Circle.**
+
+The codebase differs from the standard `master` branch. To use this customized version, please ensure you clone this specific branch (`preemptive-kernel`) by running the following command:
+
+git clone -b preemptive-kernel https://github.com/alvstakahashi/preemptive-circle.git
+
+The following folder is currently being created:
+sample/04-01-preemptive-kernel/
+
+Still under construction.
+
 Circle
 ======
 
