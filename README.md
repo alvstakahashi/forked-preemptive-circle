@@ -9,8 +9,6 @@ git clone -b preemptive-kernel https://github.com/alvstakahashi/preemptive-circl
 The following folder is currently being created:
 sample/04-01-preemptive-kernel/
 
-Still under construction.
-
 Circle
 ======
 
