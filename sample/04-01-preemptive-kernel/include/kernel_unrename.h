@@ -4,6 +4,11 @@
 #ifdef TOPPERS_KERNEL_RENAME_H
 #undef TOPPERS_KERNEL_RENAME_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /*
  *  startup.c
  */
@@ -326,5 +331,9 @@
 #endif /* TOPPERS_LABEL_ASM */
 
 //#include "target_unrename.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* TOPPERS_KERNEL_RENAME_H */

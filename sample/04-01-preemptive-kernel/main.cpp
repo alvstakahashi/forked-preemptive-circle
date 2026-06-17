@@ -17,12 +17,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+
 #include <circle/startup.h>
+
+#include <stdio.h>
+#include <stdint.h>
+
+#include <kernel.h>
+#include "kernel_cfg.h"
+#include "kernel_impl.h"
+#include "target_kernel.h"
+
 #include "circle_kernel.h"
 #include "mykernel.h"
 #include "task-main.h"
 
 static const char FromKernel2[] = "kernel";
+static const char FromTask[] = "Task";
+volatile int count = 0;
 
 int main(void)
 {
@@ -44,7 +56,7 @@ int main(void)
 		return EXIT_HALT;
 	}
 }
-#ifdef NO_SSP
+#if NO_SSP
 
 uint32_t tick_count;
 void _kernel_handler(INTHDR userhandler)
@@ -64,12 +76,41 @@ void sta_ker(void)
 }
 #endif
 
+void main_task(intptr_t arg)
+{
+	CMyKernel::Instance().m_Logger.Write(FromKernel2, LogNotice, "main here");
+	act_tsk(TASK3_ID);
+	act_tsk(TASK2_ID);
+	CMyKernel::Instance().m_Logger.Write(FromKernel2, LogNotice, "main end");
+}
+
 void task2(intptr_t arg)
 {
-	CMyKernel::Instance().m_Logger.Write(FromKernel2, LogNotice, "Task2 Running.");
+	int toggle= 0;
+	CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "task2 RUNNING-----------------------------------------------------");
+	for(;;)
+	{
+		if ((toggle ^= 1) != 0)
+		{
+			CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "TASK2 count= %d",count);
+//			digitalWrite(LED_ACT_PIN, HIGH);
+		}
+		else
+		{
+			CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "TASK2 count= %d",count);
+//			digitalWrite(LED_ACT_PIN, LOW);
+		}
+		dly_tsk(1000);
+	}
 }
 
 void task3(intptr_t arg)
 {
-	CMyKernel::Instance().m_Logger.Write(FromKernel2, LogNotice, "Task3 Running.");
+	CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "task3-----------------");
+	for(;;)
+	{
+		dly_tsk(500);
+		count++;
+		CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "task3-----------------");
+	}
 }

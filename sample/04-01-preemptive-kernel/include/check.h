@@ -89,7 +89,10 @@
 
 #ifndef TOPPERS_CHECK_H
 #define TOPPERS_CHECK_H
-
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 /*
  *  —Dæ“x‚Ì”ÍˆÍ‚Ì”»’è
  */
@@ -189,5 +192,9 @@
 		goto error_exit;									\
 	}														\
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* TOPPERS_CHECK_H */

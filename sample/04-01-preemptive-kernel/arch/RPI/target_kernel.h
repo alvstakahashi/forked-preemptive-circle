@@ -57,6 +57,11 @@
 #ifndef TOPPERS_TARGET_KERNEL_H
 #define TOPPERS_TARGET_KERNEL_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #undef		TOPPERS_RX62N			//RX62N
 #define		TOPPERS_RPI				//Raspberry PI
 
@@ -75,9 +80,55 @@
 /*
  *  タイムティックの定義
  */
-#define	TIC_NUME		( 1U )		/* タイムティックの周期の分子 */
+#define	TIC_NUME		( 10U )		/* circle用に変更 タイムティックの周期の分子 */
 #define	TIC_DENO		( 1U )		/* タイムティックの周期の分母 */
 
+// タイマー値の更新確認マクロ　引かないので、elseの場合は引くこと
+#define NUME_UP(val, sub)  ((val) > (sub) ? (val) - (sub) : 0)
+
+#define	ipl_maskClear()	
+
+#if defined(__aarch64__)
+    // --- Aarch64 (64-bit) 用の定義 (elr_el1を排除し、x19-x28のみに最適化) ---
+    // カリーセーブレジスタ(x19-x28)は10個 = 80バイト (16バイトアライメント適合)
+    #define saveCTX() __asm__ __volatile__ ( \
+        "sub sp, sp, #80\n\t" \
+        "stp x19, x20, [sp, #0]\n\t" \
+        "stp x21, x22, [sp, #16]\n\t" \
+        "stp x23, x24, [sp, #32]\n\t" \
+        "stp x25, x26, [sp, #48]\n\t" \
+        "stp x27, x28, [sp, #64]\n\t" \
+        ::: "memory" \
+    )
+
+    #define loadCTX() __asm__ __volatile__ ( \
+        "ldp x19, x20, [sp, #0]\n\t" \
+        "ldp x21, x22, [sp, #16]\n\t" \
+        "ldp x23, x24, [sp, #32]\n\t" \
+        "ldp x25, x26, [sp, #48]\n\t" \
+        "ldp x27, x28, [sp, #64]\n\t" \
+        "add sp, sp, #80\n\t" \
+        ::: "memory" \
+    )
+
+#define set_task_stack(x)    __asm__ volatile ("mov sp, %[Rs1]" :: [Rs1]"r"(x) : "memory")
+
+#define disable_IRQ()        __asm__ volatile ("msr daifset, #2" ::: "memory")
+#define enable_IRQ()         __asm__ volatile ("msr daifclr, #2" ::: "memory")
+
+// 💡 互換性のための定義（ビット7が1ならIRQ禁止状態）
+#define IFLAG_BIT    (0x80)
+
+inline int getmode(void)
+{
+    int daif;
+    // DAIFレジスタ（割り込みマスク状態）を読み出す
+    __asm__ volatile ("mrs %[Rd], DAIF" : [Rd]"=r"(daif));
+    return daif;
+}
+
+#else
+// --- Aarch32 (32-bit) 既存の定義 ---
 
 #define	set_task_stack(x)	__asm__( "mov sp,%[Rs1]"::[Rs1]"r"(x))
 
@@ -102,11 +153,11 @@
 #define disable_IRQ()		__asm__("mrs	r0, cpsr;ldr	r1,	=0x80;orr r0, r0, r1;msr	cpsr_c, r0;":::"r0","r1")
 #define enable_IRQ()		__asm__("mrs	r0, cpsr;ldr	r1,	=0x80;bic r0, r0, #0x80;;msr	cpsr_c, r0;":::"r0")
 
-#define	ipl_maskClear()	
-
-
 #define saveCTX()	__asm__("stmfd sp!, {r5-r10};":::)
 #define loadCTX()	__asm__("ldmfd sp!, {r5-r10};":::)
+
+// 💡 互換性のための定義（ビット7が1ならIRQ禁止状態）
+#define IFLAG_BIT    (0x80)
 
 Inline int getmode(void)
 {
@@ -115,10 +166,12 @@ Inline int getmode(void)
 	return(status);
 }
 
+#endif	//end of __aarch64__
+
 
 Inline bool_t sence_mode(void)		// 割り込みロック（不可）のとき真
 {
-	return(( bool_t )((getmode() & 0x80) != 0));
+	return(( bool_t )((getmode() & IFLAG_BIT) != 0));
 }
 
 
@@ -179,7 +232,9 @@ Inline bool_t sense_context( void )
 	return ( intnest > 0U );
 }
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* TOPPERS_TARGET_KERNEL_H */
 #endif

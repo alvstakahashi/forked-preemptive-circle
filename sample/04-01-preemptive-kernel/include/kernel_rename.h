@@ -3,6 +3,11 @@
 #ifndef TOPPERS_KERNEL_RENAME_H
 #define TOPPERS_KERNEL_RENAME_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /*
  *  startup.c
  */
@@ -323,6 +328,10 @@
 
 
 #endif /* TOPPERS_LABEL_ASM */
+
+#ifdef __cplusplus
+}
+#endif
 
 #include <stddef.h>
 

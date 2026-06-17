@@ -1,7 +1,20 @@
 #include "mykernel.h"
 #include "task-main.h"
 
-static const char FromKernel[] = "kernel";
+static const char FromKernel3[] = "Timer";
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+extern void sta_ker(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+uint32_t tick_count;
 
 CMyKernel *CMyKernel::s_pInstance = nullptr;
 
@@ -24,6 +37,8 @@ TShutdownMode CMyKernel::Run(void)
     {
         return ShutdownHalt;
     }
+
+    tick_count = 0;
 
     // 3. 定期タイマーの登録（CircleのCTimerクラス(m_Timer)を利用）
     //    引数は10ミリ秒単位, circleの1tickのデフォルトが10msなので一旦それにする
@@ -50,5 +65,17 @@ void CMyKernel::TimerHandler(void)
     }
 #endif
     // ※ この時点で、IRQStubによってコンテキスト（レジスタ一式）はスタックに保存済みです。
-    _kernel_handler(NULL);
+    //_kernel_handler(isig_tim);
+    _kernel_handler(user_handler);
+}
+
+void user_handler(void)
+{
+	tick_count++;
+	if (tick_count >= 100U)
+	{
+		CMyKernel::Instance().m_Logger.Write(FromKernel3, LogNotice, "1Second Up.");
+		tick_count = 0;
+	}
+    isig_tim();
 }

@@ -65,6 +65,11 @@
  *  ターゲット依存部
  */
 #include "target_kernel.h"
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #ifndef TOPPERS_MACRO_ONLY
 
 /*
@@ -221,5 +226,8 @@ extern ER 		dly_tsk(RELTIM dlytim);
 #define COUNT_STK_T(sz)		TOPPERS_COUNT_SZ(sz, sizeof(STK_T))
 #define ROUND_STK_T(sz)		TOPPERS_ROUND_SZ(sz, sizeof(STK_T))
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* TOPPERS_KERNEL_H */

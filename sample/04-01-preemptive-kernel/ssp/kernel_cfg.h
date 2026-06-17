@@ -1,6 +1,10 @@
 /* kernel_cfg.h */
 #ifndef TOPPERS_KERNEL_CFG_H
 #define TOPPERS_KERNEL_CFG_H
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 #define TNUM_TSKID	3
 #define TNUM_CYCID	0
@@ -19,8 +23,9 @@ extern unsigned char task_wait[TNUM_TSKID];
 
 extern RELTIM	tskTout[TNUM_TSKID];
 
-
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* TOPPERS_KERNEL_CFG_H */
 

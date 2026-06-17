@@ -7,6 +7,11 @@
 #include "kernel_cfg.h"
 #include "sample1.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /*
  *  Task Management Functions
  */
@@ -16,7 +21,7 @@ const ID _kernel_tmax_tskid = (TMIN_TSKID + TNUM_TSKID - 1);
 const ATR     	_kernel_tinib_tskatr[TNUM_TSKID]    = {(TA_NULL),(TA_NULL),(TA_ACT)};
 const uint_t	_kernel_init_rdypmap = 1U;
 const intptr_t	_kernel_tinib_exinf[TNUM_TSKID]     = {(intptr_t)(0),(intptr_t)(0),(intptr_t)(0)};
-const TASK    	_kernel_tinib_task[TNUM_TSKID]      = {(main),(task2),(task3)};
+const TASK    	_kernel_tinib_task[TNUM_TSKID]      = {(main_task),(task2),(task3)};
 const uint_t  	_kernel_tinib_epriority[TNUM_TSKID] = {INT_PRIORITY(1),INT_PRIORITY(1),INT_PRIORITY(1)};
 
 
@@ -77,6 +82,10 @@ _kernel_initialize_object(void)
 #ifndef TARGET_COPYRIGHT
 #define TARGET_COPYRIGHT
 #endif /* TARGET_COPYRIGHT */
+
+#ifdef __cplusplus
+}
+#endif
 
 
 

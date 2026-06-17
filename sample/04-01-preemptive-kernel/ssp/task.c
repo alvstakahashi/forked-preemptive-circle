@@ -519,11 +519,14 @@ void isig_tim()
 	{
 		if (tskTout[tskid] != 0)
 		{
-			if (--tskTout[tskid] == 0)
+			if (NUME_UP(tskTout[tskid],(uint_t)TIC_NUME) == 0)
 			{
+				tskTout[tskid] = 0;
 				task_wait[tskid] = 0;		//wait状態解除
 				primap_set(tskid);		//レディQ追加
 				reqflg = 1;
+			} else {
+				tskTout[tskid] -= (uint_t)TIC_NUME;
 			}
 		}
 	}

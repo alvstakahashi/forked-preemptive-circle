@@ -63,6 +63,11 @@
  */
 #include <t_stddef.h>
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 extern bool_t	kerflg;
 
 extern volatile uint16_t intnest;
@@ -170,4 +175,9 @@ extern void	sta_ker(void);
 extern void	exit_kernel(void);
 
 #endif /* TOPPERS_MACRO_ONLY */
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* TOPPERS_KERNEL_IMPL_H */
