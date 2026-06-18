@@ -92,13 +92,13 @@ void task2(intptr_t arg)
 	{
 		if ((toggle ^= 1) != 0)
 		{
-			CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "TASK2 count= %d",count);
-//			digitalWrite(LED_ACT_PIN, HIGH);
+			CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "TASK2 LED ON  count= %d",count);
+			CMyKernel::Instance().m_ActLED.On();
 		}
 		else
 		{
-			CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "TASK2 count= %d",count);
-//			digitalWrite(LED_ACT_PIN, LOW);
+			CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "TASK2 LED OFF count= %d",count);
+			CMyKernel::Instance().m_ActLED.Off();
 		}
 		dly_tsk(1000);
 	}

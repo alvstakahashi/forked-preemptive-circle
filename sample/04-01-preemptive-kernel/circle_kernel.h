@@ -51,10 +51,10 @@ public:
 	static void TimerHandler(TKernelTimerHandle hTimer, void *pParam, void *pContext);
 	CLogger m_Logger;
 	CTimer m_Timer;
+	CActLED m_ActLED;
 
 private:
 	// do not change this order
-	CActLED m_ActLED;
 	CKernelOptions m_Options;
 	CDeviceNameService m_DeviceNameService;
 	CScreenDevice m_Screen;
