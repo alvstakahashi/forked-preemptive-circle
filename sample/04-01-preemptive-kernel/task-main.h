@@ -15,9 +15,8 @@ extern "C"
 #define NO_SSP (0) /* SSPカーネルあり*/
 
 #ifndef TOPPERS_MACRO_ONLY
-    extern void task2(intptr_t arg);
-    extern void task3(intptr_t arg);
-
+    extern void High_task(intptr_t arg);
+    extern void Low_task(intptr_t arg);
 
 #ifndef INTHDR
     typedef void (*INTHDR)(void);

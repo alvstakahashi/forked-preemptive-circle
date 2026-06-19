@@ -9,6 +9,14 @@ git clone -b preemptive-kernel https://github.com/alvstakahashi/preemptive-circl
 The following folder is currently being created:
 sample/04-01-preemptive-kernel/
 
+sample Detail:
+Low_tsk is a task with low task priority.
+Low_tsk will try to run continuously after it starts.
+The circle library's MsDelay keeps the task in the RUN state due to a busy loop.
+However, if a high-priority High_task is in the Ready state, i.e., tries to run,
+Low_task will immediately be preempted and switched to High_task.
+This will probably happen during Low_task's 5-second delay, but the delay time should be exactly 5 seconds.
+
 Circle
 ======
 

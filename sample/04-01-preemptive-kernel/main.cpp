@@ -79,12 +79,12 @@ void sta_ker(void)
 void main_task(intptr_t arg)
 {
 	CMyKernel::Instance().m_Logger.Write(FromKernel2, LogNotice, "main here");
-	act_tsk(TASK3_ID);
-	act_tsk(TASK2_ID);
+	act_tsk(LOW_TASK3_ID);
+	act_tsk(HIGH_TASK2_ID);
 	CMyKernel::Instance().m_Logger.Write(FromKernel2, LogNotice, "main end");
 }
 
-void task2(intptr_t arg)
+void High_task(intptr_t arg)
 {
 	int toggle= 0;
 	CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "task2 RUNNING-----------------------------------------------------");
@@ -104,12 +104,21 @@ void task2(intptr_t arg)
 	}
 }
 
-void task3(intptr_t arg)
+/*
+Low_tsk is a task with low task priority.
+Low_tsk will try to run continuously after it starts.
+The circle library's MsDelay keeps the task in the RUN state due to a busy loop.
+However, if a high-priority High_task is in the Ready state, i.e., tries to run,
+Low_task will immediately be preempted and switched to High_task.
+This will probably happen during Low_task's 5-second delay, but the delay time should be exactly 5 seconds.
+*/
+
+void Low_task(intptr_t arg)
 {
 	CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "task3-----------------");
 	for(;;)
 	{
-		dly_tsk(500);
+		CTimer::Get ()->MsDelay (5000);		// busy Delay 5 Secons
 		count++;
 		CMyKernel::Instance().m_Logger.Write(FromTask, LogNotice, "task3-----------------");
 	}
