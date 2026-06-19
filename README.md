@@ -17,6 +17,22 @@ However, if a high-priority High_task is in the Ready state, i.e., tries to run,
 Low_task will immediately be preempted and switched to High_task.
 This will probably happen during Low_task's 5-second delay, but the delay time should be exactly 5 seconds.
 
+branch: preemptive-kernel
+## Supported Architectures
+* **Compatibility:** The kernel and scheduler logic are designed to be fully compatible with **all target platforms supported by the original "Circle" framework** (including various Raspberry Pi generations, Aarch32, and Aarch64).
+* **Verified Device:** Currently, physical device verification has been performed and confirmed on the **Raspberry Pi 4**.
+## Features
+* **100% Custom Scheduler Core:** Developed from scratch for the ARM64 architecture, featuring independent context switching (register save/restore) and scheduling logic without relying on FreeRTOS or any third-party OS.
+* **Preemptive Scheduling:** Supports priority-based preemptive task switching triggered by both a customizable/configurable timer tick and non-timer events.
+* **Instant Context Switching:** Execution rights transfer immediately upon a context switch trigger, bounded only by pure hardware capabilities and register save/restore performance, without waiting for the next timer interval.
+
+## How to Run
+Sample code to verify the kernel operation is located in the `sample/04-01-preemptive-kernel` directory.
+1. Navigate to the specific sample directory inside `sample/04-01-preemptive-kernel`.
+2. Run the `make` command to build the project.
+3. Copy the generated image file to your SD card and boot your Raspberry Pi.
+
+
 Circle
 ======
 
