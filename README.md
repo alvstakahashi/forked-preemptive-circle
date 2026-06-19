@@ -4,7 +4,7 @@
 
 The codebase differs from the standard `master` branch. To use this customized version, please ensure you clone this specific branch (`preemptive-kernel`) by running the following command:
 
-git clone -b preemptive-kernel https://github.com/alvstakahashi/preemptive-circle.git
+git clone -b preemptive-kernel https://github.com/alvstakahashi/forked-preemptive-circle.git
 
 The following folder is currently being created:
 sample/04-01-preemptive-kernel/
