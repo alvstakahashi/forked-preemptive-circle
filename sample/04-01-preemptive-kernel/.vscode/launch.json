@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Circle Pi4 JTAG Attach",
+            "type": "cortex-debug",
+            "request": "attach", // ★変更1: launch から attach に変更
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/kernel8-rpi4.elf",
+            "servertype": "external", 
+            "gdbTarget": "localhost:3333",
+            "armToolchainPath": "/opt/toolchains/arm-gnu-toolchain-15.2.rel1-x86_64-aarch64-none-elf/bin", 
+            "toolchainPrefix": "aarch64-none-elf",
+            "gdbPath": "/usr/bin/gdb-multiarch",
+            
+            // ★変更2: attach用の初期化上書きコマンドに変更
+            "overrideAttachCommands": [
+                "set auto-load safe-path /",
+                "target extended-remote localhost:3333"
+            ],
+            "postAttachCommands": [
+                "set remotetimeout 20"
+            ],
+            "showDevDebugOutput": "none"
+        }
+    ]
+}

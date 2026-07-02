@@ -14,7 +14,13 @@ extern void sta_ker(void);
 }
 #endif
 
+//Uncomment this if using JTAG. 
+//#define JTAG_DEBUG
+
 uint32_t tick_count;
+#ifdef JTAG_DEBUG
+volatile int g_jtag_debug_hold = 1; 
+#endif
 
 CMyKernel *CMyKernel::s_pInstance = nullptr;
 
@@ -31,6 +37,11 @@ CMyKernel::~CMyKernel(void)
 
 TShutdownMode CMyKernel::Run(void)
 {
+#ifdef JTAG_DEBUG
+    while (g_jtag_debug_hold) {
+        asm volatile("nop"); // ループが空だと最適化で消されるのを防ぐ
+    }
+#endif
     // 1. Circle本来の初期化処理（画面、シリアル、メモリ等のセットアップ）を実行
     //    内部で Initialize() が呼ばれ、デバイスの準備が完了します
     if (!Initialize())
@@ -45,6 +56,7 @@ TShutdownMode CMyKernel::Run(void)
     m_Timer.RegisterPeriodicHandler(TimerHandler);
 
     // 4. 割り込みを許可して自作カーネルの実行フェーズへ移行
+    // VSCodeでアタッチして、デバッグコンソールから g_jtag_debug_hold = 0 に書き換えるまでここでループ
     sta_ker();
     while (1)
         ;
