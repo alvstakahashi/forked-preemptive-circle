@@ -89,27 +89,9 @@ extern "C"
 #define	ipl_maskClear()	
 
 #if defined(__aarch64__)
-    // --- Aarch64 (64-bit) 用の定義 (elr_el1を排除し、x19-x28のみに最適化) ---
-    // カリーセーブレジスタ(x19-x28)は10個 = 80バイト (16バイトアライメント適合)
-    #define saveCTX() __asm__ __volatile__ ( \
-        "sub sp, sp, #80\n\t" \
-        "stp x19, x20, [sp, #0]\n\t" \
-        "stp x21, x22, [sp, #16]\n\t" \
-        "stp x23, x24, [sp, #32]\n\t" \
-        "stp x25, x26, [sp, #48]\n\t" \
-        "stp x27, x28, [sp, #64]\n\t" \
-        ::: "memory" \
-    )
-
-    #define loadCTX() __asm__ __volatile__ ( \
-        "ldp x19, x20, [sp, #0]\n\t" \
-        "ldp x21, x22, [sp, #16]\n\t" \
-        "ldp x23, x24, [sp, #32]\n\t" \
-        "ldp x25, x26, [sp, #48]\n\t" \
-        "ldp x27, x28, [sp, #64]\n\t" \
-        "add sp, sp, #80\n\t" \
-        ::: "memory" \
-    )
+    // IRQStub ですべて保存されているので不要
+    #define saveCTX()
+    #define loadCTX()
 
 #define set_task_stack(x)    __asm__ volatile ("mov sp, %[Rs1]" :: [Rs1]"r"(x) : "memory")
 
@@ -153,8 +135,9 @@ inline int getmode(void)
 #define disable_IRQ()		__asm__("mrs	r0, cpsr;ldr	r1,	=0x80;orr r0, r0, r1;msr	cpsr_c, r0;":::"r0","r1")
 #define enable_IRQ()		__asm__("mrs	r0, cpsr;ldr	r1,	=0x80;bic r0, r0, #0x80;;msr	cpsr_c, r0;":::"r0")
 
-#define saveCTX()	__asm__("stmfd sp!, {r5-r10};":::)
-#define loadCTX()	__asm__("ldmfd sp!, {r5-r10};":::)
+// 再調査でレジスタが不足していたので追加
+#define saveCTX()	__asm__("stmfd sp!, {r5-r11};":::)
+#define loadCTX()	__asm__("ldmfd sp!, {r5-r11};":::)
 
 // 💡 互換性のための定義（ビット7が1ならIRQ禁止状態）
 #define IFLAG_BIT    (0x80)
